@@ -27,7 +27,7 @@ pub fn parse_filters(filters: Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
                             }
 
                             match args.first().unwrap().parse::<f32>() {
-                                Ok(amount) => Ok(Filter::Brighten { amount }),
+                                Ok(amount) => if amount >= 0.0 && amount <= 1.0 { Ok(Filter::Brighten { amount }) } else { bail!("Parameter supplied for brighten must be between [0, 1]") },
                                 Err(_err) => bail!("Invalid parameter supplied for brighten filter: must be a number")
                             }
                         },
