@@ -22,23 +22,20 @@ struct CliArgs {
     pub filters: Vec<String>,
 }
 
-fn main() {
-    let opts: CliArgs = CliArgs::from_args();
-    let filters = match filters::parse_filters(opts.filters) {
-        Ok(filters) => filters,
-        Err(err) => {
-            eprintln!("{}", err.to_string());
-            return;
-        }
-    };
 
-    let input = match File::open(opts.input) {
-        Ok(input) => input,
-        Err(_err) => {
-            eprintln!("Error opening input file. It probably doesn't exist");
-            return;
-        }
-    };
+fn run() -> Result<(), Box<std::error::Error>> {
+    let opts: CliArgs = CliArgs::from_args();
+    let filters = filters::parse_filters(opts.filters)?;
+
+    let input = File::open(opts.input)
+        .map_err(|_e| "Error opening input file. It probably doesn't exist")?;
 
     println!("Input file {:?} exists. Filters detected: {:?}", input, filters);
+    Ok(())
+}
+
+fn main() {
+    if let Err(e) = run() {
+        eprintln!("{}", e.description())
+    }
 }
