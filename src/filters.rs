@@ -9,7 +9,7 @@ pub enum Filter {
 }
 
 /// Parses a list of strings as filters
-pub fn parse_filters(filters: Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
+pub fn parse_filters(filters: &Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
     filters
         .into_iter()
         .map(|filter| {
@@ -49,23 +49,23 @@ mod tests {
 
     #[test]
     fn test_parse_filters_simple() {
-        assert_eq!(parse_filters(vec!["identity".to_string(), "invert-color".to_string()]).unwrap(), vec!(Filter::Identity, Filter::InvertColor))
+        assert_eq!(parse_filters(&vec!["identity".to_string(), "invert-color".to_string()]).unwrap(), vec!(Filter::Identity, Filter::InvertColor))
     }
 
     #[test]
     fn test_parse_filters_with_arg() {
-        assert_eq!(parse_filters(vec!["identity".to_string(), "brighten=0.5".to_string()]).unwrap(), vec!(Filter::Identity, Filter::Brighten { amount: 0.5 }))
+        assert_eq!(parse_filters(&vec!["identity".to_string(), "brighten=0.5".to_string()]).unwrap(), vec!(Filter::Identity, Filter::Brighten { amount: 0.5 }))
     }
 
     #[test]
     #[should_panic]
     fn test_parse_filters_invalid() {
-        parse_filters(vec!["non_existing_filter".to_string()]).unwrap();
+        parse_filters(&vec!["non_existing_filter".to_string()]).unwrap();
     }
 
     #[test]
     #[should_panic]
     fn test_parse_filter_brighten_out_of_range() {
-        parse_filters(vec!["brighten=1.1".to_string()]).unwrap();
+        parse_filters(&vec!["brighten=1.1".to_string()]).unwrap();
     }
 }
