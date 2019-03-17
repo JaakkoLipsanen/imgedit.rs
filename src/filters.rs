@@ -1,7 +1,6 @@
-
-
 use std::error::Error;
 
+/// Enum containing all the filters that the application supports
 #[derive(Debug, PartialEq)]
 pub enum Filter {
     Identity,
@@ -9,14 +8,15 @@ pub enum Filter {
     Brighten { amount: f32 }
 }
 
+/// Parses a list of strings as filters
 pub fn parse_filters(filters: Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
-    return filters
+    filters
         .into_iter()
         .map(|filter| {
-            let filter_name: Vec<&str> = filter.split("=").collect();
-            let args: Option<Vec<&str>> = filter_name.get(1).map(|args| args.split(",").collect());
+            let filter_name: Vec<&str> = filter.split('=').collect();
+            let args: Option<Vec<&str>> = filter_name.get(1).map(|args| args.split(',').collect());
 
-            return match filter_name.first() {
+            match filter_name.first() {
                 Some(&"identity") => Ok(Filter::Identity),
                 Some(&"invert-color") => Ok(Filter::InvertColor),
                 Some(&"brighten") => {
@@ -38,7 +38,7 @@ pub fn parse_filters(filters: Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
                 _ => bail!("Invalid filter argument '{}'", filter)
             }
         })
-        .collect();
+        .collect()
 }
 
 

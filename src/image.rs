@@ -2,23 +2,26 @@ use lodepng::RGBA;
 use std::path::{Path};
 use simple_error::SimpleError;
 
+/// Struct containing the Image information
 pub struct Image {
     pub buffer: Vec<RGBA>,
     pub width: usize,
     pub height: usize,
 }
 
+/// Loads the PNG image from the given path
 pub fn load_image(path: &Path) -> Result<Image, Box<std::error::Error>> {
     if !path.exists() {
         bail!("File '{}' doesn't exist", path.to_str().unwrap())
     }
 
-    return match lodepng::decode32_file(path) {
+    match lodepng::decode32_file(path) {
         Ok(image) => Ok(Image { buffer: image.buffer.to_vec(), width: image.width, height: image.height }),
         Err(_e) => Err(make_err(format!("File '{}' doesn't seem to be a PNG", path.to_str().unwrap())))
-    };
+    }
 }
 
+/// Saves the image as PNG to the given path
 pub fn save_image(image: &Image, path: &Path) -> Result<(), Box<std::error::Error>> {
     lodepng::encode32_file(path, &image.buffer, image.width, image.height)?;
     Ok(())
