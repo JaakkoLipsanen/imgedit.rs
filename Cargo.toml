@@ -7,4 +7,4 @@ edition = "2018"
 [dependencies]
 structopt = "0.2.10"
 simple-error = "0.1.13"
-png = "0.14.0"
+lodepng = "2.0.0"

@@ -23,7 +23,7 @@ pub fn parse_filters(filters: Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
                     match args {
                         Some(args) => {
                             if args.len() != 1 {
-                                bail!("Invalid amount of arguments for brighten filter. Only one argument is needd")
+                                bail!("Invalid amount of arguments for brighten filter. Only one argument is needed")
                             }
 
                             match args.first().unwrap().parse::<f32>() {

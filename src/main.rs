@@ -3,10 +3,11 @@ extern crate structopt;
 extern crate simple_error;
 
 mod filters;
+mod image;
 
-use std::path::PathBuf;
+use std::path::{PathBuf};
 use structopt::StructOpt;
-use std::fs::File;
+use crate::filters::Filter;
 
 #[derive(StructOpt, Debug)]
 struct CliArgs {
@@ -22,15 +23,20 @@ struct CliArgs {
     pub filters: Vec<String>,
 }
 
+// TODO: implement
+fn apply_filters<'a>(image: &'a mut image::Image, _filters: &Vec<Filter>) -> Result<&'a image::Image, Box<std::error::Error>> {
+    Ok(image)
+}
 
 fn run() -> Result<(), Box<std::error::Error>> {
     let opts: CliArgs = CliArgs::from_args();
     let filters = filters::parse_filters(opts.filters)?;
+    let mut image  = image::load_image(&opts.input)?;
 
-    let input = File::open(opts.input)
-        .map_err(|_e| "Error opening input file. It probably doesn't exist")?;
+    apply_filters(&mut image, &filters)?;
+    image::save_image(&image, &opts.output)?;
 
-    println!("Input file {:?} exists. Filters detected: {:?}", input, filters);
+    println!("Output saved to {}", opts.output.to_str().unwrap());
     Ok(())
 }
 
