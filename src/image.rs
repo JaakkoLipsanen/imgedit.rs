@@ -17,7 +17,7 @@ pub fn load_image(path: &Path) -> Result<Image, Box<std::error::Error>> {
 
     match lodepng::decode32_file(path) {
         Ok(image) => Ok(Image { buffer: image.buffer.to_vec(), width: image.width, height: image.height }),
-        Err(_e) => Err(make_err(format!("File '{}' doesn't seem to be a PNG", path.to_str().unwrap())))
+        Err(_e) => bail!("File '{}' doesn't seem to be a PNG", path.to_str().unwrap())
     }
 }
 
@@ -25,11 +25,6 @@ pub fn load_image(path: &Path) -> Result<Image, Box<std::error::Error>> {
 pub fn save_image(image: &Image, path: &Path) -> Result<(), Box<std::error::Error>> {
     lodepng::encode32_file(path, &image.buffer, image.width, image.height)?;
     Ok(())
-}
-
-
-fn make_err(str: String) -> Box<SimpleError> {
-    Box::new(SimpleError::new(str))
 }
 
 #[cfg(test)]
