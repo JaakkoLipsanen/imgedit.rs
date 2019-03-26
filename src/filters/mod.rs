@@ -9,7 +9,7 @@ pub enum Filter {
     Identity,
     InvertColor,
     Greyscale,
-    Brighten { amount: f32 }
+    Brighten { amount: f32 },
 }
 
 /// Applies all filters given as parameter to the image
@@ -27,7 +27,7 @@ fn apply_filter(filter: &Filter, image: &image::Image) -> Result<image::Image, B
         Filter::Identity => Ok(image.clone()),
         Filter::InvertColor => Ok(implementations::invert_color(&image)),
         Filter::Greyscale => Ok(implementations::greyscale(&image)),
-        _ => bail!("{:?} not implemented", filter)
+        Filter::Brighten { amount } => bail!("Brighten filter not implemented yet")
     }
 }
 
