@@ -1,12 +1,5 @@
 use std::error::Error;
-
-/// Enum containing all the filters that the application supports
-#[derive(Debug, PartialEq)]
-pub enum Filter {
-    Identity,
-    InvertColor,
-    Brighten { amount: f32 }
-}
+use super::Filter;
 
 /// Parses a list of strings as filters
 pub fn parse_filters(filters: &Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
@@ -40,7 +33,6 @@ pub fn parse_filters(filters: &Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
         })
         .collect()
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -1,6 +1,5 @@
 use lodepng::RGBA;
 use std::path::{Path};
-use simple_error::SimpleError;
 
 /// Struct containing the Image information
 pub struct Image {

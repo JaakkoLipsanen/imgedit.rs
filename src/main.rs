@@ -35,7 +35,7 @@ fn apply_filters<'a>(image: &'a mut image::Image, _filters: &[Filter]) -> Result
 /// The main flow of the application is located here
 fn run() -> Result<(), Box<std::error::Error>> {
     let opts: CliArgs = CliArgs::from_args();
-    let filters = filters::parse_filters(&opts.filters)?;
+    let filters = filters::parse::parse_filters(&opts.filters)?;
     let mut image  = image::load_image(&opts.input)?;
 
     apply_filters(&mut image, &filters)?;
