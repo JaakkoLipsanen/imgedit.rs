@@ -12,6 +12,7 @@ pub fn parse_filters(filters: &Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
             match filter_name.first() {
                 Some(&"identity") => Ok(Filter::Identity),
                 Some(&"invert-color") => Ok(Filter::InvertColor),
+                Some(&"greyscale") => Ok(Filter::Greyscale),
                 Some(&"brighten") => {
                     match args {
                         Some(args) => {

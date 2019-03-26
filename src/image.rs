@@ -2,6 +2,7 @@ use lodepng::RGBA;
 use std::path::{Path};
 
 /// Struct containing the Image information
+#[derive(Clone)]
 pub struct Image {
     pub buffer: Vec<RGBA>,
     pub width: usize,
