@@ -147,4 +147,17 @@ mod tests {
         assert!(brightened.buffer[center_index].b > 128);
         assert_eq!(brightened.buffer[center_index].a, 255);
     }
+
+    #[test]
+    fn test_blur_one_value() {
+        let img = create_test_img(&vec![
+            RGBA { r: 72, g: 128, b: 192, a: 255 }
+        ]);
+        let brightened = &blur(&img);
+
+        assert_eq!(brightened.buffer[0].r, 72);
+        assert_eq!(brightened.buffer[0].g, 128);
+        assert_eq!(brightened.buffer[0].b, 192);
+        assert_eq!(brightened.buffer[0].a, 255);
+    }
 }
