@@ -15,7 +15,7 @@ pub enum Filter {
 }
 
 /// Applies all filters given as parameter to the image
-pub fn apply_filters<'a>(filters: &[Filter], image: &image::Image) -> Result<image::Image, Box<std::error::Error>> {
+pub fn apply_filters(filters: &[Filter], image: &image::Image) -> Result<image::Image, Box<std::error::Error>> {
     let mut processed_image = image.clone();
     for filter in filters {
         processed_image = apply_filter(filter, &processed_image)?;

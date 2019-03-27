@@ -55,10 +55,10 @@ fn apply_kernel_for_pixel(kernel: &Kernel, pixel_xy: (usize, usize), image: &ima
             let pixel = image.buffer[py * image.width + px];
             let kernel_value = kernel_data[j * w + i];
 
-            accum.0 += pixel.r as f32 * kernel_value;
-            accum.1 += pixel.g as f32 * kernel_value;
-            accum.2 += pixel.b as f32 * kernel_value;
-            accum.3 += pixel.a as f32 * kernel_value;
+            accum.0 += f32::from(pixel.r) * kernel_value;
+            accum.1 += f32::from(pixel.g) * kernel_value;
+            accum.2 += f32::from(pixel.b) * kernel_value;
+            accum.3 += f32::from(pixel.a) * kernel_value;
         }
     }
 

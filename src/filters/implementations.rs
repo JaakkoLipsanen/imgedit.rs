@@ -18,7 +18,7 @@ pub fn greyscale(image: &image::Image) -> image::Image {
     let mut modified = image.clone();
     for i in 0..modified.buffer.len() {
         let rgba = &mut modified.buffer[i];
-        let color_linear = rgba.r as f32 / 255.0 * 0.2126 + rgba.g as f32 / 255.0 * 0.7152 + rgba.b as f32 / 255.0 * 0.0722;
+        let color_linear = f32::from(rgba.r) / 255.0 * 0.2126 + f32::from(rgba.g) / 255.0 * 0.7152 + f32::from(rgba.b) / 255.0 * 0.0722;
         let clamped = num::clamp((color_linear * 255.0) as u8, 0, 255);
 
         rgba.r = clamped;
@@ -44,11 +44,11 @@ pub fn brighten(image: &image::Image, amount: f32) -> image::Image {
 pub fn blur(image: &image::Image) -> image::Image {
     let kernel = kernel::Kernel5x5 {
         matrix: [
-            0.003765,	0.015019,	0.023792,	0.015019,	0.003765,
-            0.015019,	0.059912,	0.094907,	0.059912,	0.015019,
-            0.023792,	0.094907,	0.150342,	0.094907,	0.023792,
-            0.015019,	0.059912,	0.094907,	0.059912,	0.015019,
-            0.003765,	0.015019,	0.023792,	0.015019,	0.003765,
+            0.003_765,	0.015_019,	0.023_792,	0.015_019,	0.003_765,
+            0.015_019,	0.059_912,	0.094_907,	0.059_912,	0.015_019,
+            0.023_792,	0.094_907,	0.150_342,	0.094_907,	0.023_792,
+            0.015_019,	0.059_912,	0.094_907,	0.059_912,	0.015_019,
+            0.003_765,	0.015_019,	0.023_792,	0.015_019,	0.003_765,
         ]
     };
 

@@ -2,9 +2,9 @@ use std::error::Error;
 use super::Filter;
 
 /// Parses a list of strings as filters
-pub fn parse_filters(filters: &Vec<String>) -> Result<Vec<Filter>, Box<Error>> {
+pub fn parse_filters(filters: &[String]) -> Result<Vec<Filter>, Box<Error>> {
     filters
-        .into_iter()
+        .iter()
         .map(|filter| {
             let filter_name: Vec<&str> = filter.split('=').collect();
             let args: Option<Vec<&str>> = filter_name.get(1).map(|args| args.split(',').collect());
