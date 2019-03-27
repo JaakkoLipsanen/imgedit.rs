@@ -1,4 +1,5 @@
 use super::image;
+use super::kernel;
 use num;
 
 pub fn invert_color(image: &image::Image) -> image::Image {
@@ -26,6 +27,32 @@ pub fn greyscale(image: &image::Image) -> image::Image {
     }
 
     modified
+}
+
+pub fn brighten(image: &image::Image, amount: f32) -> image::Image {
+    let kernel = kernel::Kernel3x3 {
+        matrix: [
+            0.0, 0.0, 0.0,
+            0.0, 1.0 + amount, 0.0,
+            0.0, 0.0, 0.0
+        ]
+    };
+
+    kernel::apply_kernel(&kernel, &image)
+}
+
+pub fn blur(image: &image::Image) -> image::Image {
+    let kernel = kernel::Kernel5x5 {
+        matrix: [
+            0.003765,	0.015019,	0.023792,	0.015019,	0.003765,
+            0.015019,	0.059912,	0.094907,	0.059912,	0.015019,
+            0.023792,	0.094907,	0.150342,	0.094907,	0.023792,
+            0.015019,	0.059912,	0.094907,	0.059912,	0.015019,
+            0.003765,	0.015019,	0.023792,	0.015019,	0.003765,
+        ]
+    };
+
+    kernel::apply_kernel(&kernel, &image)
 }
 
 
@@ -77,5 +104,47 @@ mod tests {
 
         assert_eq!(greyscale.buffer[0].a, 255);
         assert_eq!(greyscale.buffer[1].a, 128);
+    }
+
+    #[test]
+    fn test_brighten() {
+        let img = create_test_img(&vec![RGBA { r: 10, g: 66, b: 67, a: 255 }]);
+        let brightened = &brighten(&img, 1.0);
+
+        assert_eq!(brightened.buffer[0].r, 10 * 2);
+        assert_eq!(brightened.buffer[0].g, 66 * 2);
+        assert_eq!(brightened.buffer[0].b, 67 * 2);
+        assert_eq!(brightened.buffer[0].a, 255);
+    }
+
+    #[test]
+    fn test_brighten_zero_does_not_modify() {
+        let img = create_test_img(&vec![RGBA { r: 10, g: 66, b: 67, a: 255 }]);
+        let brightened = &brighten(&img, 0.0);
+
+        assert_eq!(brightened.buffer[0].r, 10);
+        assert_eq!(brightened.buffer[0].g, 66);
+        assert_eq!(brightened.buffer[0].b, 67);
+        assert_eq!(brightened.buffer[0].a, 255);
+    }
+
+    #[test]
+    fn test_blur() {
+        let img = create_test_img(&vec![
+            RGBA { r: 255, g: 0, b: 255, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 255, g: 0, b: 255, a: 255 },
+            RGBA { r: 255, g: 0, b: 255, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 255, g: 0, b: 255, a: 255 },
+            RGBA { r: 255, g: 0, b: 255, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 255, g: 0, b: 255, a: 255 },
+            RGBA { r: 255, g: 0, b: 255, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 255, g: 0, b: 255, a: 255 },
+            RGBA { r: 255, g: 0, b: 255, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 128, g: 128, b: 128, a: 255 }, RGBA { r: 255, g: 0, b: 255, a: 255 },
+        ]);
+        let brightened = &blur(&img);
+
+        let center_index = 2 * 5 + 2;
+
+        // make sure that values are changed towards the average of the nearest values
+        assert!(brightened.buffer[center_index].r > 128);
+        assert!(brightened.buffer[center_index].g < 128);
+        assert!(brightened.buffer[center_index].b > 128);
+        assert_eq!(brightened.buffer[center_index].a, 255);
     }
 }

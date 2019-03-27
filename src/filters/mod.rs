@@ -1,5 +1,6 @@
 pub mod parse;
 mod implementations;
+mod kernel;
 
 use super::image;
 
@@ -10,6 +11,7 @@ pub enum Filter {
     InvertColor,
     Greyscale,
     Brighten { amount: f32 },
+    Blur
 }
 
 /// Applies all filters given as parameter to the image
@@ -27,7 +29,9 @@ fn apply_filter(filter: &Filter, image: &image::Image) -> Result<image::Image, B
         Filter::Identity => Ok(image.clone()),
         Filter::InvertColor => Ok(implementations::invert_color(&image)),
         Filter::Greyscale => Ok(implementations::greyscale(&image)),
-        Filter::Brighten { amount } => bail!("Brighten filter not implemented yet")
+        Filter::Brighten { amount } => Ok(implementations::brighten(&image, *amount)),
+        Filter::Blur => Ok(implementations::blur(&image))
     }
 }
+
 
