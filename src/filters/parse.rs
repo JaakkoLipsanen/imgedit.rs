@@ -102,18 +102,18 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_parse_filter_hue_shift_out_of_range() {
-        parse_filters(&vec!["hue-shuft=480".to_string()]).unwrap();
+        parse_filters(&vec!["hue-shift=480".to_string()]).unwrap();
     }
 
     #[test]
     #[should_panic]
     fn test_parse_filter_hue_shift_invalid_amount() {
-        parse_filters(&vec!["hue-shuft=not_a_number".to_string()]).unwrap();
+        parse_filters(&vec!["hue-shift=not_a_number".to_string()]).unwrap();
     }
 
     #[test]
     #[should_panic]
     fn test_parse_filter_hue_shift_no_args() {
-        parse_filters(&vec!["hue-shuft".to_string()]).unwrap();
+        parse_filters(&vec!["hue-shift".to_string()]).unwrap();
     }
 }
