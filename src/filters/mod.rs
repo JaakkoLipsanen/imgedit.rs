@@ -3,6 +3,7 @@ mod implementations;
 mod kernel;
 
 use super::image;
+use super::hsl;
 
 /// Enum containing all the filters that the application supports
 #[derive(Debug, PartialEq)]
@@ -11,6 +12,7 @@ pub enum Filter {
     InvertColor,
     Greyscale,
     Brighten { amount: f32 },
+    HueShift { amount: f32 },
     Blur
 }
 
@@ -30,7 +32,8 @@ fn apply_filter(filter: &Filter, image: &image::Image) -> Result<image::Image, B
         Filter::InvertColor => Ok(implementations::invert_color(&image)),
         Filter::Greyscale => Ok(implementations::greyscale(&image)),
         Filter::Brighten { amount } => Ok(implementations::brighten(&image, *amount)),
-        Filter::Blur => Ok(implementations::blur(&image))
+        Filter::Blur => Ok(implementations::blur(&image)),
+        Filter::HueShift { amount } => Ok(implementations::hue_shift(&image, *amount))
     }
 }
 

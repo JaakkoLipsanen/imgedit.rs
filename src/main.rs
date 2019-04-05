@@ -3,6 +3,7 @@ extern crate structopt;
 
 mod filters;
 mod image;
+mod hsl;
 
 use std::path::{PathBuf};
 use structopt::StructOpt;

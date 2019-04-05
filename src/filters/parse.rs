@@ -14,6 +14,25 @@ pub fn parse_filters(filters: &[String]) -> Result<Vec<Filter>, Box<Error>> {
                 Some(&"invert-color") => Ok(Filter::InvertColor),
                 Some(&"greyscale") => Ok(Filter::Greyscale),
                 Some(&"blur") => Ok(Filter::Blur),
+                Some(&"hue-shift") => {
+                    match args {
+                        Some(args) => {
+                            if args.len() != 1 {
+                                bail!("Too many arguments for hue-shift filter. Only one argument is needed")
+                            }
+
+                            match args.first().unwrap().parse::<f32>() {
+                                Ok(amount) => if amount >= 0.0 && amount <= 360.0 {
+                                    Ok(Filter::HueShift { amount })
+                                } else  {
+                                    bail!("Parameter suppplied for hue-shift must be between [0, 360]")
+                                }
+                                Err(_err) => bail!("Invalid parameter supplied for hue-shift filter: must be a number")
+                            }
+                        }
+                        None => bail!("Missing argument in hue-shift filter. Use: 'hue-shift=180'")
+                    }
+                }
                 Some(&"brighten") => {
                     match args {
                         Some(args) => {
@@ -22,7 +41,11 @@ pub fn parse_filters(filters: &[String]) -> Result<Vec<Filter>, Box<Error>> {
                             }
 
                             match args.first().unwrap().parse::<f32>() {
-                                Ok(amount) => if amount >= 0.0 && amount <= 1.0 { Ok(Filter::Brighten { amount }) } else { bail!("Parameter supplied for brighten must be between [0, 1]") },
+                                Ok(amount) => if amount >= 0.0 && amount <= 1.0 {
+                                    Ok(Filter::Brighten { amount })
+                                } else {
+                                    bail!("Parameter supplied for brighten must be between [0, 1]")
+                                },
                                 Err(_err) => bail!("Invalid parameter supplied for brighten filter: must be a number")
                             }
                         },
@@ -48,7 +71,7 @@ mod tests {
 
     #[test]
     fn test_parse_filters_with_arg() {
-        assert_eq!(parse_filters(&vec!["identity".to_string(), "brighten=0.5".to_string()]).unwrap(), vec!(Filter::Identity, Filter::Brighten { amount: 0.5 }))
+        assert_eq!(parse_filters(&vec!["identity".to_string(), "brighten=0.5".to_string(), "hue-shift=280".to_string()]).unwrap(), vec!(Filter::Identity, Filter::Brighten { amount: 0.5 }, Filter::HueShift { amount: 280.0 }))
     }
 
     #[test]
@@ -61,5 +84,36 @@ mod tests {
     #[should_panic]
     fn test_parse_filter_brighten_out_of_range() {
         parse_filters(&vec!["brighten=1.1".to_string()]).unwrap();
+    }
+
+
+    #[test]
+    #[should_panic]
+    fn test_parse_filter_brighten_invalid_amount() {
+        parse_filters(&vec!["brighten=not_a_number".to_string()]).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_filter_brighten_no_args() {
+        parse_filters(&vec!["brighten".to_string()]).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_filter_hue_shift_out_of_range() {
+        parse_filters(&vec!["hue-shuft=480".to_string()]).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_filter_hue_shift_invalid_amount() {
+        parse_filters(&vec!["hue-shuft=not_a_number".to_string()]).unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_parse_filter_hue_shift_no_args() {
+        parse_filters(&vec!["hue-shuft".to_string()]).unwrap();
     }
 }

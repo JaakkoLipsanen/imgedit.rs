@@ -1,6 +1,8 @@
 use super::image;
 use super::kernel;
+use super::hsl::HSL;
 use num;
+use lodepng::{RGB,RGBA};
 
 pub fn invert_color(image: &image::Image) -> image::Image {
     let mut modified = image.clone();
@@ -55,6 +57,23 @@ pub fn blur(image: &image::Image) -> image::Image {
     kernel::apply_kernel(&kernel, &image)
 }
 
+// Algorithms from https://en.wikipedia.org/wiki/HSL_and_HSV
+pub fn hue_shift(image: &image::Image, amount: f32) -> image::Image {
+    let mut modified = image.clone();
+    for i in 0..modified.buffer.len() {
+        let rgba = modified.buffer[i];
+
+        let hsl = HSL::from_rgb(RGB::from((rgba.r, rgba.g, rgba.b)));
+        let hue_shifted_hsl = HSL { h: (hsl.h + amount + 360.0) % 360.0, s: hsl.s, l: hsl.l };
+
+        let modified_rgb = hue_shifted_hsl.to_rgb();
+        let final_rgba =  RGBA::from((modified_rgb.r, modified_rgb.g, modified_rgb.b, rgba.a));
+
+        modified.buffer[i] = final_rgba;
+    }
+
+    modified
+}
 
 #[cfg(test)]
 mod tests {
@@ -159,5 +178,51 @@ mod tests {
         assert_eq!(brightened.buffer[0].g, 128);
         assert_eq!(brightened.buffer[0].b, 192);
         assert_eq!(brightened.buffer[0].a, 255);
+    }
+
+
+    #[test]
+    fn test_hue_shift_360() {
+        let img = create_test_img(&vec![
+            RGBA { r: 72, g: 128, b: 192, a: 255 }
+        ]);
+        let hue_shifted_360 = &hue_shift(&img, 360.0);
+
+        assert_eq!(hue_shifted_360.buffer[0].r, 72);
+        assert_eq!(hue_shifted_360.buffer[0].g, 128);
+        assert_eq!(hue_shifted_360.buffer[0].b, 192);
+        assert_eq!(hue_shifted_360.buffer[0].a, 255);
+    }
+
+    #[test]
+    fn test_hue_shift_180() {
+        let img = create_test_img(&vec![
+            RGBA { r: 255, g: 0, b: 0, a: 255 }
+        ]);
+        let hue_shifted_60 = &hue_shift(&img, 60.0);
+        let hue_shifted_120 = &hue_shift(&img, 120.0);
+        let hue_shifted_180 = &hue_shift(&img, 180.0);
+        let hue_shifted_240 = &hue_shift(&img, 240.0);
+        let hue_shifted_300 = &hue_shift(&img, 300.0);
+
+        assert_eq!(hue_shifted_60.buffer[0].r, 255);
+        assert_eq!(hue_shifted_60.buffer[0].g, 255);
+        assert_eq!(hue_shifted_60.buffer[0].b, 0);
+
+        assert_eq!(hue_shifted_120.buffer[0].r, 0);
+        assert_eq!(hue_shifted_120.buffer[0].g, 255);
+        assert_eq!(hue_shifted_120.buffer[0].b, 0);
+
+        assert_eq!(hue_shifted_180.buffer[0].r, 0);
+        assert_eq!(hue_shifted_180.buffer[0].g, 255);
+        assert_eq!(hue_shifted_180.buffer[0].b, 255);
+
+        assert_eq!(hue_shifted_240.buffer[0].r, 0);
+        assert_eq!(hue_shifted_240.buffer[0].g, 0);
+        assert_eq!(hue_shifted_240.buffer[0].b, 255);
+
+        assert_eq!(hue_shifted_300.buffer[0].r, 255);
+        assert_eq!(hue_shifted_300.buffer[0].g, 0);
+        assert_eq!(hue_shifted_300.buffer[0].b, 255);
     }
 }
