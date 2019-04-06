@@ -14,6 +14,7 @@ Available filters are:
 - `invert-color` - inverts color of each pixel
 - `greyscale` - transforms image into greyscale
 - `blur` - applies a simple 5px wide blur on the image
+- `unsharp-mask` - sharpens the image with [unsharp masking technique](https://en.wikipedia.org/wiki/Unsharp_masking)
 - `hue-shift=<amount>`, where `amount` is between [0, 360] - shifts the [hue](https://en.wikipedia.org/wiki/Hue) of the each pixel of in the image by `amount`.
 - `brighten=<amount>`, where `amount` is between [0, 1] - brightens each pixel by `amount`, where `amount = 1` means that each pixels every component is multiplied by two.
 

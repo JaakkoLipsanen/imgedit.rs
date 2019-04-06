@@ -13,6 +13,7 @@ pub enum Filter {
     Greyscale,
     Brighten { amount: f32 },
     HueShift { amount: f32 },
+    UnsharpMask,
     Blur
 }
 
@@ -33,7 +34,8 @@ fn apply_filter(filter: &Filter, image: &image::Image) -> Result<image::Image, B
         Filter::Greyscale => Ok(implementations::greyscale(&image)),
         Filter::Brighten { amount } => Ok(implementations::brighten(&image, *amount)),
         Filter::Blur => Ok(implementations::blur(&image)),
-        Filter::HueShift { amount } => Ok(implementations::hue_shift(&image, *amount))
+        Filter::HueShift { amount } => Ok(implementations::hue_shift(&image, *amount)),
+        Filter::UnsharpMask => Ok(implementations::unsharp_mask(&image))
     }
 }
 

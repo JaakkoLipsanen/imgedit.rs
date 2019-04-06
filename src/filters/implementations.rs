@@ -80,6 +80,23 @@ pub fn hue_shift(image: &image::Image, amount: f32) -> image::Image {
     modified
 }
 
+/// sharpens the image with unsharp masking technique
+/// https://en.wikipedia.org/wiki/Unsharp_masking
+pub fn unsharp_mask(image: &image::Image) -> image::Image {
+    let multiplier = -1.0 / 256.0;
+    let kernel = kernel::Kernel5x5 {
+        matrix: [
+           1.0 * multiplier, 4.0 * multiplier, 6.0 * multiplier, 4.0 * multiplier, 1.0 * multiplier,
+            4.0 * multiplier, 16.0 * multiplier, 24.0 * multiplier, 16.0 * multiplier, 4.0 * multiplier,
+            6.0 * multiplier, 24.0 * multiplier, -476.0 * multiplier, 24.0 * multiplier, 6.0 * multiplier,
+            4.0 * multiplier, 16.0 * multiplier, 24.0 * multiplier, 16.0 * multiplier, 4.0 * multiplier,
+            1.0 * multiplier, 4.0 * multiplier, 6.0 * multiplier, 4.0 * multiplier, 1.0 * multiplier
+        ]
+    };
+
+    kernel::apply_kernel(&kernel, &image)
+}
+
 #[cfg(test)]
 mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.

@@ -14,6 +14,7 @@ pub fn parse_filters(filters: &[String]) -> Result<Vec<Filter>, Box<Error>> {
                 Some(&"invert-color") => Ok(Filter::InvertColor),
                 Some(&"greyscale") => Ok(Filter::Greyscale),
                 Some(&"blur") => Ok(Filter::Blur),
+                Some(&"unsharp-mask") => Ok(Filter::UnsharpMask),
                 Some(&"hue-shift") => {
                     match args {
                         Some(args) => {
@@ -71,7 +72,10 @@ mod tests {
 
     #[test]
     fn test_parse_filters_with_arg() {
-        assert_eq!(parse_filters(&vec!["identity".to_string(), "brighten=0.5".to_string(), "hue-shift=280".to_string()]).unwrap(), vec!(Filter::Identity, Filter::Brighten { amount: 0.5 }, Filter::HueShift { amount: 280.0 }))
+        assert_eq!(
+            parse_filters(&vec!["identity".to_string(), "unsharp-mask".to_string(), "greyscale".to_string(), "brighten=0.5".to_string(), "hue-shift=280".to_string()]).unwrap(),
+            vec!(Filter::Identity, Filter::UnsharpMask, Filter::Greyscale, Filter::Brighten { amount: 0.5 }, Filter::HueShift { amount: 280.0 })
+        )
     }
 
     #[test]
