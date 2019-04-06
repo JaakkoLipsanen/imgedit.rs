@@ -29,6 +29,7 @@ impl Kernel for Kernel5x5 {
     fn get_height(&self) -> usize { 5 }
 }
 
+/// applies kernel on each pixel of the umage
 pub fn apply_kernel(kernel: &Kernel, image: &image::Image) -> image::Image {
     let mut modified_image = image.clone();
     for x in 0..image.width {
@@ -40,7 +41,6 @@ pub fn apply_kernel(kernel: &Kernel, image: &image::Image) -> image::Image {
 
     modified_image
 }
-
 
 fn apply_kernel_for_pixel(kernel: &Kernel, pixel_xy: (usize, usize), image: &image::Image) -> RGBA {
     let mut accum = (0.0, 0.0, 0.0, 0.0);

@@ -4,6 +4,7 @@ use super::hsl::HSL;
 use num;
 use lodepng::{RGB,RGBA};
 
+/// inverts every pixels RGB values to invert, for example (255, 0, 0) -> (0, 255, 255)
 pub fn invert_color(image: &image::Image) -> image::Image {
     let mut modified = image.clone();
     for i in 0..modified.buffer.len() {
@@ -16,6 +17,7 @@ pub fn invert_color(image: &image::Image) -> image::Image {
     modified
 }
 
+/// makes the image greyscale
 pub fn greyscale(image: &image::Image) -> image::Image {
     let mut modified = image.clone();
     for i in 0..modified.buffer.len() {
@@ -31,6 +33,8 @@ pub fn greyscale(image: &image::Image) -> image::Image {
     modified
 }
 
+/// brightens every pixel by `amount`. `amount=1` means that every pixels
+/// every components is multiplied by two, `amount=0.5` means multiplied by 1.5 etc
 pub fn brighten(image: &image::Image, amount: f32) -> image::Image {
     let kernel = kernel::Kernel3x3 {
         matrix: [
@@ -43,6 +47,7 @@ pub fn brighten(image: &image::Image, amount: f32) -> image::Image {
     kernel::apply_kernel(&kernel, &image)
 }
 
+/// applies 5x5 blur on the image
 pub fn blur(image: &image::Image) -> image::Image {
     let kernel = kernel::Kernel5x5 {
         matrix: [
@@ -57,7 +62,7 @@ pub fn blur(image: &image::Image) -> image::Image {
     kernel::apply_kernel(&kernel, &image)
 }
 
-// Algorithms from https://en.wikipedia.org/wiki/HSL_and_HSV
+/// shifts the hue of every pixel in the image by `amount`
 pub fn hue_shift(image: &image::Image, amount: f32) -> image::Image {
     let mut modified = image.clone();
     for i in 0..modified.buffer.len() {
