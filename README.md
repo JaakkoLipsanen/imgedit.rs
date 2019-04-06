@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/JaakkoLipsanen/imgedit.rs/branch/master/graph/badge.svg)](https://codecov.io/gh/JaakkoLipsanen/imgedit.rs)
+
 # imgedit.rs
 CLI image manipulation tool written in Rust for University of Helsinki's Data Structures Project -course.
 
