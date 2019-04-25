@@ -1,4 +1,4 @@
-# Viikkoraportti 5
+# Viikkoraportti 6
 
 #### Mitä olen tehnyt tällä viikolla?
 Toteutin suorityskykytestit ja kirjoitin tuloksista [testaus dokumenttiin](docs/Testausdokumentti.md).
