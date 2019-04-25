@@ -1,5 +1,9 @@
+#![feature(test)]
+
 #[macro_use] extern crate simple_error;
 extern crate structopt;
+extern crate rand;
+extern crate test;
 
 mod filters;
 mod image;

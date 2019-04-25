@@ -99,15 +99,32 @@ pub fn unsharp_mask(image: &image::Image) -> image::Image {
 
 #[cfg(test)]
 mod tests {
-    // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
     use lodepng::RGBA;
+    use rand::Rng;
+    use test::Bencher;
 
     fn create_test_img(pixels: &Vec<RGBA>) -> image::Image {
         image::Image {
             buffer: pixels.clone(),
             width: pixels.len(),
             height: 1
+        }
+    }
+
+    fn create_random_square_test_img(width: usize, height: usize) -> image::Image {
+        let mut rng = rand::thread_rng();
+
+        let size = width * height;
+        let mut pixels = Vec::<RGBA>::with_capacity(size);
+        for i in 0..size {
+            pixels.push(RGBA { r: rng.gen_range(0, 255), g: rng.gen_range(0, 255), b: rng.gen_range(0, 255), a: 255 })
+        }
+
+        image::Image {
+            width,
+            height,
+            buffer: pixels
         }
     }
 
@@ -246,5 +263,54 @@ mod tests {
         assert_eq!(hue_shifted_300.buffer[0].r, 255);
         assert_eq!(hue_shifted_300.buffer[0].g, 0);
         assert_eq!(hue_shifted_300.buffer[0].b, 255);
+    }
+
+    #[bench]
+    fn benchmark_greyscale_fullhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(1920, 1080);
+        b.iter(|| greyscale(&test_image))
+    }
+
+    #[bench]
+    fn benchmark_greyscale_uhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(3840, 2160);
+        b.iter(|| greyscale(&test_image))
+    }
+
+    #[bench]
+    fn benchmark_blur_fullhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(1920, 1080);
+        b.iter(|| blur(&test_image))
+    }
+
+    #[bench]
+    fn benchmark_blur_uhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(3840, 2160);
+        b.iter(|| blur(&test_image))
+    }
+
+    #[bench]
+    fn benchmark_unsharp_mask_fullhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(1920, 1080);
+        b.iter(|| unsharp_mask(&test_image))
+    }
+
+    #[bench]
+    fn benchmark_unsharp_mask_uhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(3840, 2160);
+        b.iter(|| unsharp_mask(&test_image))
+    }
+
+
+    #[bench]
+    fn benchmark_hue_shift_fullhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(1920, 1080);
+        b.iter(|| hue_shift(&test_image, 90.0))
+    }
+
+    #[bench]
+    fn benchmark_hue_shift_uhd(b: &mut Bencher) {
+        let test_image = create_random_square_test_img(3840, 2160);
+        b.iter(|| hue_shift(&test_image, 90.0))
     }
 }
