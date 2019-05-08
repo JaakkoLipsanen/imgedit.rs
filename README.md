@@ -7,6 +7,10 @@ CLI image manipulation tool written in Rust for University of Helsinki's Data St
 [Code coverage](https://codecov.io/gh/JaakkoLipsanen/imgedit.rs)
 
 ## How to run
+### Binary
+OSX build can be found in [releases](https://github.com/JaakkoLipsanen/imgedit.rs/releases/tag/final-return)
+
+### Build yourself
 1. [Install Rust and Cargo](https://www.rust-lang.org/tools/install) (**NOTE! Nightly version of Rust required** for benchmark tests)
 2. Run with `cargo run -- --input <INPUT IMAGE PATH> --output <OUTPUT PATH> --apply <LIST OF FILTERS HERE>`  
 Note: Only supported image format is png.
